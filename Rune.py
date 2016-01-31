@@ -7,10 +7,10 @@
 # 'futhark' 
 # Katherine Martinez
 ##
-class Rune(Object):
+class Rune:
 
     # "static" list of futhark rune names
-    self.FUTHARK_LIST = ['ansuz',
+    FUTHARK_LIST = ['ansuz',
                          'algiz',
                          'fehu',
                          'uruz',
@@ -41,7 +41,7 @@ class Rune(Object):
         self.runeset = "DEFAULT"
 
     def getPath(self):
-        return "../text/" + self.runeset + "/" + self.name + "/"
+        return "text/" + self.runeset + "/" + self.name + "/"
 
     def getRuneset(self):
         return self.runeset
@@ -49,11 +49,21 @@ class Rune(Object):
     def getName(self):
         return self.name
 
-    def getPrimaryText(self):
+    def getPrimaryPath(self):
         return self.getPath() + "primary.txt"
 
-    def getSecondaryText(self):
+    def getSecondaryPath(self):
         return self.getPath() + "secondary.txt"
+
+    def printPrimary(self):
+        textFile = open(self.getPrimaryPath())
+        textMsg = textFile.read(255)
+        print "< Primary Rune: \n< ", textMsg
+
+    def printSecondary(self):
+        textFile = open(self.getSecondaryPath())
+        textMsg = textFile.read(255)
+        print "< Clarified by: \n< ", textMsg
 
 class Futhark(Rune):
 

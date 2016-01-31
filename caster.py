@@ -12,21 +12,45 @@
 ##
 import sys
 import time
-from classes.Rune import *
+import random
+from Rune import *
 
-def __main__(args):
+def hashToRune(hash, runebag):
+    random.seed(hash)
+    return random.choice(runebag)
 
-    runenames = Rune.FUTHARK_LIST
+def getRunes(topic, timeHash, runebag):
+    upperHash = hash(topic.upper())
+    lowerHash = hash(topic.lower())
+    upperSeed = (upperHash ^ timeHash) + upperHash
+    lowerSeed = (lowerHash ^ timeHash) + lowerHash
+    upper = hashToRune(upperSeed, runebag)
+    lower = hashToRune(lowerSeed, runebag)
+    while (lower == upper):
+        lower = hashToRune(lowerSeed, runebag)
+    return (upper, lower)
 
-    while(true):
-        run()
-
-def run():
+def run(runebag):
     print("> CMD_FUTHARK \n ... \n ...")
     topicString = raw_input("> What would you like to know about?  ")
-    timeHash = str(time.time()).hash()
-    upperHash = topicString.uppercase().hash()
-    lowerHash = topicString.lowercase().hash()
-    primarySeed = (upperHash ^ timeHash) + upperHash
-    secondarySeed = (lowerHash ^ timeHash) + lowerHash
+    timeStr = str(time.time())
+    timeHash = hash(timeStr)
+    (primary, secondary) = getRunes(topicString, timeHash, runebag);
+    primary.printPrimary()
+    secondary.printSecondary()
+    ans = raw_input("> Press any key to continue... ")
+    if (ans.lower() == 'quit'):
+        sys.exit()
+    return
+
+if __name__ ==  '__main__':
+
+    runenames = Rune.FUTHARK_LIST
+    runebag = []
+    for i in xrange(len(runenames)):
+        runebag.insert(i, Futhark(runenames[i]))
+
+    while(True):
+        run(runebag)
+
 
